@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+  --el-color-text: black;
+
+  --el-color-bg: #f2ebe3; // bone color
+  --el-color-border: #2d2f32;
+  --el-color-line: #2d2f32;
+  --el-color-secondary: #dddad7;
+  --el-color-link: #ffffff;
+
+  --el-color-orange: #f2604a;
+  --el-color-purple: #7c4af2;
+  --el-color-blue: #4a82f2;
+  --font-size: 16px;
+  --app-padding: 40px;
+}
+
+.dark-mode {
+  --el-color-bg: #232426;
+  --el-color-text: white;
+  --el-color-border: #436078; // bone color
+  --el-color-secondary: #494b4e;
+  --el-color-link: #2e3033;
+}
+
+* {
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: 400;
+  box-sizing: border-box !important;
+}
+
+body {
+  background-color: var(--el-color-bg);
+  transition: background-color 0.3s ease;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.btn {
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  height: auto !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+  margin: 0;
+  padding: 0;
+  color: var(--el-color-text);
+}
+
+a {
+  text-decoration: none;
+}
