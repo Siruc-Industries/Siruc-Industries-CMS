@@ -1,11 +1,15 @@
 <template>
   <div class="container">
     <aside class="aside">
-      ...
+      <NuxtLink to="/">
+        ...
+      </NuxtLink>
     </aside>
     <main class="main">
       <div class="top">
-        <el-button>Add article</el-button>
+        <NuxtLink to="/new">
+          <el-button>Add article</el-button>
+        </NuxtLink>
       </div>
       <section class="section">
         <NuxtPage />
