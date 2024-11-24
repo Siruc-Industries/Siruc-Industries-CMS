@@ -15,7 +15,7 @@
           <div class="footer">
             <p>{{ article.author }}</p>
             <span class="span">|</span>
-            <i>{{ article.date }}</i>
+            <i>{{ article.createdAt }}</i>
           </div>
         </template>
       </el-card>
@@ -27,20 +27,6 @@
 </template>
 
 <script setup>
-// const articles = [
-//   {
-//     title: 'First article',
-//     text: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae esse reiciendis nulla! Sed delectus excepturi nihil corporis ex, dolore odio blanditiis pariatur dolor aspernatur corrupti quam nesciunt vitae inventore deserunt.',
-//     author: 'Yury Siruts',
-//     date: '16.11.2024'
-//   },
-//   {
-//     title: 'Second article',
-//     text: 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Beatae esse reiciendis nulla! Sed delectus excepturi nihil corporis ex, dolore odio blanditiis pariatur dolor aspernatur corrupti quam nesciunt vitae inventore deserunt.',
-//     author: 'Illia Rybachek',
-//     date: '17.11.2024'
-//   },
-// ]
 
 import { ref, onMounted } from 'vue';
 
@@ -49,11 +35,17 @@ const articles = ref([]);
 // Fetch articles when the component is mounted
 const fetchArticles = async () => {
   try {
-    const response = await fetch('/api/articles');
+    const response = await fetch('http://localhost:5000/api/articles');
     if (!response.ok) {
       throw new Error(`Failed to fetch articles: ${response.status}`);
     }
-    const data = await response.json();
+    let data = await response.json();
+    data = data.map((article) => {
+      return {
+        ...article,
+        createdAt: article.createdAt.split('T')[0]
+      }
+    })
     articles.value = data;
   } catch (error) {
     console.error('Fetch articles error:', error.message);

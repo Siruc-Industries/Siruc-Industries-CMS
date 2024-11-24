@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="global-container">
     <aside class="aside">
       <NuxtLink to="/">
         ...
@@ -22,15 +22,13 @@
 </script>
 
 <style lang="scss" scoped>
-.container {
-  width: 100vw;
-  height: 100vh;
+.global-container {
   display: flex;
   flex-direction: row;
+  min-height: 100vh;
 
   .aside {
     width: 15%;
-    height: 100%;
     padding: 25px 30px;
     border-right: 1px solid var(--el-color-border);
   }
