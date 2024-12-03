@@ -2,7 +2,7 @@
   <div>
     <h1 class="title">Content Managment System</h1>
     <div v-if="articles.length">
-      <el-card v-for="article in articles" :key="article.title" class="card">
+      <el-card v-for="article in articles" :key="article.id" class="card">
         <template #header>
           <div class="header">
             <div class="header-info">
@@ -20,7 +20,7 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item>Edit</el-dropdown-item>
-                    <el-dropdown-item>Delete</el-dropdown-item>
+                    <el-dropdown-item @click="openDialog(article.id)">Delete {{ article.id }}</el-dropdown-item>
                   </el-dropdown-menu>
                 </template>
               </el-dropdown>
@@ -28,7 +28,7 @@
           </div>
         </template>
         <p class="text item">
-          {{ article.text }}
+          {{ article.text + ' >>> ' + article.id }}
         </p>
         <template #footer>
           <div class="footer">
@@ -44,12 +44,30 @@
     <div v-else>
       <h3>No articles yet!</h3>
     </div>
+    <el-dialog
+      v-model="dialogVisible"
+      title="Attention"
+      width="500"
+      align-center
+    >
+      <span>Are you sure you want to delete this article?</span>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="confirmDelete()">
+            Confirm
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 const articles = ref([]);
+const dialogVisible = ref(false);
+const chosenArticleId = ref();
 
 // Fetch articles when the component is mounted
 const fetchArticles = async () => {
@@ -59,17 +77,44 @@ const fetchArticles = async () => {
       throw new Error(`Failed to fetch articles: ${response.status}`);
     }
     let data = await response.json();
-    data = data.map((article) => {
+    data = data.map((article: any) => {
       return {
         ...article,
         createdAt: article.createdAt.split('T')[0]
       }
     })
     articles.value = data;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Fetch articles error:', error.message);
     // Allow the frontend to proceed even if the API call fails
     articles.value = []; // Fallback to an empty array
+  }
+};
+
+const openDialog = (id: number) => {
+  chosenArticleId.value = id;
+  dialogVisible.value = true;
+};
+
+const confirmDelete = async () => {
+  dialogVisible.value = false;
+  console.log(`>>> ID: ${chosenArticleId.value}`);
+  
+  try {
+    const response = await fetch(`http://localhost:5000/api/articles/${chosenArticleId.value}`, {
+      method: 'DELETE',
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete article');
+    }
+
+    console.log('Article deleted successfully');
+    
+    // Fetch the updated list of articles
+    await fetchArticles();
+  } catch (error) {
+    console.error('Error deleting article:', error);
   }
 };
 
