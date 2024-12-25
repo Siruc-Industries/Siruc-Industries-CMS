@@ -1,18 +1,18 @@
 <template>
   <div class="container">
-    <h1>{{ article.title }}</h1>
-    <p>{{ article.text }}</p>
+    <h1>{{ article?.title }}</h1>
+    <p>{{ article?.text }}</p>
     <img
-      v-if="article.image"
+      v-if="article?.image"
       :src="`http://localhost:5000${article.image}`"
       alt="Article image"
       class="card-image"
     />
-    <p>Written by: {{ article.author }}</p>
-    <p>Published on: {{ article.createdAt }}</p>
+    <p>Written by: {{ article?.author }}</p>
+    <p>Published on: {{ article?.createdAt }}</p>
 
     <div>
-      <NuxtLink :to="`/articles/edit/${article.id}`">
+      <NuxtLink :to="`/articles/edit/${article?.id}`">
         <el-button type="warning">Edit</el-button>
       </NuxtLink>
       <el-button 
@@ -45,13 +45,14 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import type { Article } from '~/services/types/Article';
 
 const route = useRoute();
 const router = useRouter();
-const article = ref({});
+const article = ref<Article | null>(null);
 const dialogVisible = ref(false);
 
-const loadArticle = async id => {
+const loadArticle = async (id: any) => {
   try {
     const response = await fetch(`http://localhost:5000/api/articles/${id}`, {
       method: 'GET',
@@ -77,7 +78,7 @@ const loadArticle = async id => {
   } catch (error: any) {
     console.error('Fetch articles error:', error.message);
     // Allow the frontend to proceed even if the API call fails
-    article.value = []; // Fallback to an empty array
+    article.value = null; // Fallback to an empty array
   }
 };
 

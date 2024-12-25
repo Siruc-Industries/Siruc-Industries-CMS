@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="title">Content Managment System</h1>
+    <h1 class="title">Articles</h1>
     <div v-if="articles.length">
       <el-card v-for="article in articles" :key="article.id" class="card">
         <template #header>
@@ -68,32 +68,14 @@
 </template>
 
 <script setup lang="ts">
+
 import { ref, onMounted } from 'vue';
-const articles = ref([]);
+import { fetchArticles } from '~/services/api/articles'
+import type { Article } from '~/services/types/Article';
+
+const articles = ref<Article[]>([]);
 const dialogVisible = ref(false);
 const chosenArticleId = ref();
-
-// Fetch articles when the component is mounted
-const fetchArticles = async () => {
-  try {
-    const response = await fetch('http://localhost:5000/api/articles');
-    if (!response.ok) {
-      throw new Error(`Failed to fetch articles: ${response.status}`);
-    }
-    let data = await response.json();
-    data = data.map((article: any) => {
-      return {
-        ...article,
-        createdAt: article.createdAt.split('T')[0]
-      }
-    })
-    articles.value = data;
-  } catch (error: any) {
-    console.error('Fetch articles error:', error.message);
-    // Allow the frontend to proceed even if the API call fails
-    articles.value = []; // Fallback to an empty array
-  }
-};
 
 const openDialog = (id: number) => {
   chosenArticleId.value = id;
@@ -116,13 +98,24 @@ const confirmDelete = async () => {
     console.log('Article deleted successfully');
     
     // Fetch the updated list of articles
-    await fetchArticles();
+    await getArticlesList();
   } catch (error) {
     console.error('Error deleting article:', error);
   }
 };
 
-onMounted(fetchArticles);
+const getArticlesList = async () => {
+  try {
+    const fetchedArticles = await fetchArticles();
+    articles.value = fetchedArticles;
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    articles.value = [];
+  }
+}
+
+// Fetch articles when the component is mounted
+onMounted(getArticlesList);
 </script>
 
 <style lang="scss">
