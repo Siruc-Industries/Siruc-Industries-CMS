@@ -1,4 +1,4 @@
-import type { Article } from "../types/Article";
+import type { Article, CreateArticle } from "../types/Article";
 
 const API_BASE_URL = 'http://localhost:5000/api';
 
@@ -28,7 +28,7 @@ export const fetchArticles = async (): Promise<Article[]> => {
 // DELETE an article 
 export const deleteArticle = async (id: number) => {
   try {
-    const response = await fetch(`http://localhost:5000/api/articles/${id}`, {
+    const response = await fetch(`${API_BASE_URL}/articles/${id}`, {
       method: 'DELETE',
     });
     
@@ -44,3 +44,18 @@ export const deleteArticle = async (id: number) => {
   }
 }
 
+// POST new article
+export const createArticle = async (formData: FormData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/articles`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create article');
+    }
+  } catch (error: any) {
+    console.error('Error creating article:', error.message);
+  }
+}

@@ -7,4 +7,11 @@ export interface Article {
   image?: string; // Optional property, as it may be null
 }
 
+export interface CreateArticle {
+  title: string;
+  text: string;
+  author: string;
+  image?: string; // Optional property, as it may be null
+}
+
 
