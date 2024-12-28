@@ -4,7 +4,7 @@
 
     <div>
       <div class="input-selector">
-        <el-select v-model="selectedField" placeholder="Add Field">
+        <el-select v-model="selectedField" placeholder="Add Field" value-key="label">
           <el-option 
             v-for="field in availableFields" 
             :key="field.label" 
@@ -50,13 +50,26 @@
       </template>
     </div>
 
-    <el-button type="primary" @click="newArticle">Create</el-button>
+    <el-button type="primary" @click="showConfirmationDialog" class="create-button">Create</el-button>
+
+    <!-- Confirmation Dialog -->
+    <el-dialog
+      title="Confirmation"
+      v-model="isDialogVisible"
+      width="360px"
+      center
+    >
+      <span>Are you sure you want to create a new article?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="confirmCreateArticle">Confirm</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <style scoped lang="scss">
 .input {
-  margin-bottom: 16px;
   width: 100%;
 }
 
@@ -73,16 +86,23 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    gap: 1rem;
+    margin-bottom: 1rem;
   }
   &-field {
     width: 100%;
     display: flex;
+    align-items: center;
     gap: 1rem;
 
     .input {
       flex: 1;
     }
   } 
+}
+
+.create-button {
+  width: 100%;
 }
 </style>
 
@@ -96,6 +116,7 @@ const store = useFormFieldsStore();
 const { formFields, availableFields } = store; // Expose store properties
 
 const selectedField = ref(null);
+const isDialogVisible = ref(false);
 
 const addField = (field) => {
   store.addField(field);
@@ -111,9 +132,14 @@ const onFileUpload = (event, index) => {
   if (file) store.handleFileUpload(index, file);
 };
 
-const newArticle  = async () => {
-  const formData = new FormData();
+const showConfirmationDialog = () => {
+  isDialogVisible.value = true;
+};
 
+const confirmCreateArticle = async () => {
+  isDialogVisible.value = false;
+
+  const formData = new FormData();
   formFields.forEach((field, index) => {
     if (field.type === 'file' && field.value instanceof File) {
       formData.append(`file-${index}`, field.value);

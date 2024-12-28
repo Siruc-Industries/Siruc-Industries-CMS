@@ -19,14 +19,11 @@ export const useFormFieldsStore = defineStore('formFields', {
   actions: {
     addField(field) {
       this.formFields.push({ ...field, value: '' });
-      console.log(this.formFields)
     },
     removeField(index) {
       if (confirm('Are you sure you want to delete this field?')) {
-        console.log('Do: ', this.formFields)
         this.formFields.splice(index, 1);
         this.formFields = [...this.formFields];
-        console.log('Posle: ', this.formFields)
       }
     },
     updateFieldValue(index, value) {
