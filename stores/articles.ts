@@ -23,7 +23,6 @@ export const useFormFieldsStore = defineStore('formFields', {
     removeField(index) {
       if (confirm('Are you sure you want to delete this field?')) {
         this.formFields.splice(index, 1);
-        this.formFields = [...this.formFields];
       }
     },
     updateFieldValue(index, value) {
