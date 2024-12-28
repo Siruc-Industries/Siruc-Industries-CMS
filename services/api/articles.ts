@@ -55,7 +55,9 @@ export const createArticle = async (formData: FormData) => {
     if (!response.ok) {
       throw new Error('Failed to create article');
     }
+    alert('Article created successfully.');
   } catch (error: any) {
-    console.error('Error creating article:', error.message);
+    alert('Error!');
+    console.error('Error creating article:', error);
   }
 }
