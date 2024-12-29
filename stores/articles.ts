@@ -12,8 +12,8 @@ export const useFormFieldsStore = defineStore('formFields', {
       { field: 'input', type: null, label: 'Title (Heading 1)', placeholder: 'Title (Heading 1)' },
       { field: 'input', type: null, label: 'Subtitle (Heading 2)', placeholder: 'Subtitle (Heading 2)' },
       { field: 'textarea', type: null, label: 'Text Area', placeholder: 'Text Area' },
-      { field: 'input', type: 'file', label: 'File Uploader' },
-      { field: 'input', type: null, label: 'Quote (Iconic Input) 123', placeholder: 'Quote (Iconic Input) qwe' },
+      { field: 'input', type: 'file', label: 'File Uploader', description: '' },
+      { field: 'input', type: null, label: 'Quote (Iconic Input)', placeholder: 'Quote (Iconic Input)' },
     ],
   }),
   actions: {

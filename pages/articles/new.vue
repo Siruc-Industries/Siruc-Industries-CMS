@@ -24,6 +24,12 @@
               type="file"
               @change="onFileUpload($event, index)"
             />
+            <el-input
+              v-model="field.description"
+              :placeholder="'Provide a description for the image'"
+              :clearable="true"
+              :disabled="!field.value"
+            />
           </template>
           <template v-else-if="field.field === 'input' || field.field === 'textarea'">
             <el-input
@@ -43,6 +49,14 @@
               class="input"
             />
           </template>
+          <div class="move-btns">
+            <el-button class="move-up" @click="moveFieldUp(index)" :disabled="index === 0">
+              <img src="assets/icons/arrow-up.svg" class="icon" alt="move up" />
+            </el-button>
+            <el-button class="move-down" @click="moveFieldDown(index)" :disabled="index === formFields.length - 1">
+              <img src="assets/icons/arrow-down.svg" class="icon" alt="move down" />
+            </el-button>
+          </div>
           <el-button class="delete-field" @click="removeField(index)">
             <img src="assets/icons/trash-bin.svg" class="icon" alt="trash bin" />
           </el-button>
@@ -98,6 +112,18 @@
     .input {
       flex: 1;
     }
+
+    .move-btns  {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .move-up,
+    .move-down {
+      margin: 0;
+      width: 30px;
+      height: 10px;
+    }
   } 
 }
 
@@ -132,6 +158,22 @@ const onFileUpload = (event, index) => {
   if (file) store.handleFileUpload(index, file);
 };
 
+const moveFieldUp = (index) => {
+  if (index > 0) {
+    const temp = formFields[index];
+    formFields[index] = formFields[index - 1];
+    formFields[index - 1] = temp;
+  }
+};
+
+const moveFieldDown = (index) => {
+  if (index < formFields.length - 1) {
+    const temp = formFields[index];
+    formFields[index] = formFields[index + 1];
+    formFields[index + 1] = temp;
+  }
+};
+
 const showConfirmationDialog = () => {
   isDialogVisible.value = true;
 };
@@ -143,6 +185,9 @@ const confirmCreateArticle = async () => {
   formFields.forEach((field, index) => {
     if (field.type === 'file' && field.value instanceof File) {
       formData.append(`file-${index}`, field.value);
+      if (field.description) {
+        formData.append(`file-description-${index}`, field.description);
+      }
     } else {
       formData.append(`field-${index}`, field.value);
     }
