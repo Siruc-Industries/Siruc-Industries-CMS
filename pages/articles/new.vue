@@ -71,13 +71,15 @@
       title="Confirmation"
       v-model="isDialogVisible"
       width="360px"
-      center
+      align-center
     >
       <span>Are you sure you want to create a new article?</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="isDialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="confirmCreateArticle">Confirm</el-button>
-      </span>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="isDialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="confirmCreateArticle">Confirm</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
