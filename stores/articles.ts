@@ -17,18 +17,18 @@ export const useFormFieldsStore = defineStore('formFields', {
     ],
   }),
   actions: {
-    addField(field) {
+    addField(field: any) {
       this.formFields.push({ ...field, value: '' });
     },
-    removeField(index) {
+    removeField(index: any) {
       if (confirm('Are you sure you want to delete this field?')) {
         this.formFields.splice(index, 1);
       }
     },
-    updateFieldValue(index, value) {
+    updateFieldValue(index: any, value: any) {
       this.formFields[index].value = value;
     },
-    handleFileUpload(index, file) {
+    handleFileUpload(index: any, file: any) {
       this.formFields[index].value = file;
     },
     clearForm() {

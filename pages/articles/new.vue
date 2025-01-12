@@ -45,7 +45,6 @@
               v-model="field.value"
               :placeholder="field.placeholder"
               :value="field.value"
-              @input="updateFieldValue(index, $event.target.value)"
               class="input"
             />
           </template>
@@ -146,21 +145,21 @@ const { formFields, availableFields } = store; // Expose store properties
 const selectedField = ref(null);
 const isDialogVisible = ref(false);
 
-const addField = (field) => {
+const addField = (field: any) => {
   store.addField(field);
   selectedField.value = null; // Reset selection
 };
 
-const removeField = (index) => {
+const removeField = (index: any) => {
   store.removeField(index);
 };
 
-const onFileUpload = (event, index) => {
+const onFileUpload = (event: any, index: any) => {
   const file = event.target.files[0];
   if (file) store.handleFileUpload(index, file);
 };
 
-const moveFieldUp = (index) => {
+const moveFieldUp = (index: any) => {
   if (index > 0) {
     const temp = formFields[index];
     formFields[index] = formFields[index - 1];
@@ -168,7 +167,7 @@ const moveFieldUp = (index) => {
   }
 };
 
-const moveFieldDown = (index) => {
+const moveFieldDown = (index: any) => {
   if (index < formFields.length - 1) {
     const temp = formFields[index];
     formFields[index] = formFields[index + 1];
@@ -184,7 +183,7 @@ const confirmCreateArticle = async () => {
   isDialogVisible.value = false;
 
   const formData = new FormData();
-  formFields.forEach((field, index) => {
+  formFields.forEach((field: any, index: any) => {
     if (field.type === 'file' && field.value instanceof File) {
       formData.append(`file-${index}`, field.value);
       if (field.description) {
@@ -198,7 +197,7 @@ const confirmCreateArticle = async () => {
   try {
     await createArticle(formData);
     store.clearForm();
-  } catch (error) {
+  } catch (error: any) {
     console.error(error.message);
   }
 };
