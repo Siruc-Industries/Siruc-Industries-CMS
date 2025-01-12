@@ -17,6 +17,9 @@ export default defineNuxtConfig({
   },
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  css: ['~/assets/styles/main.scss'],
+  css: [
+    '~/assets/styles/main.scss',
+    'element-plus/theme-chalk/dark/css-vars.css',
+  ],
   modules: ['@element-plus/nuxt'],
 })

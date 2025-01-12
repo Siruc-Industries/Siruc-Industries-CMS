@@ -5,14 +5,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 onMounted(() => {
-  document.body.classList.add('dark-mode');
+  document.body.classList.add('dark-mode-custom');
 })
 </script>
 
-<style scoped>
-body.dark-mode {
+<style scoped lang="scss">
+body.dark-mode-custom {
   background-color: var(--el-color-secondary);
   color: var(--el-color-text)
 }
