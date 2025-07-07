@@ -25,15 +25,22 @@
               @change="onFileUpload($event, index)"
             />
             <el-input
-              v-model="field.description"
+              v-model="field.value"
               :placeholder="'Provide a description for the image'"
               :clearable="true"
               :disabled="!field.value"
             />
           </template>
-          <template v-else-if="field.field === 'input' || field.field === 'textarea'">
+          <template v-else-if="field.field === 'input'">
             <el-input
               :type="field.field"
+              v-model="field.value"
+              :placeholder="field.placeholder"
+              class="input"
+            />
+          </template>
+          <template v-else-if="field.field === 'textarea'">
+            <textarea
               v-model="field.value"
               :placeholder="field.placeholder"
               class="input"
@@ -142,12 +149,20 @@ const store = useFormFieldsStore();
 
 const { formFields, availableFields } = store; // Expose store properties
 
-const selectedField = ref(null);
+const selectedField = ref<{ label: string; field: string; placeholder: string }>({
+  label: '',
+  field: '',
+  placeholder: ''
+});
 const isDialogVisible = ref(false);
 
 const addField = (field: any) => {
   store.addField(field);
-  selectedField.value = null; // Reset selection
+  selectedField.value = {
+    label: '',
+    field: '',
+    placeholder: ''
+  }; // Reset selection
 };
 
 const removeField = (index: any) => {
