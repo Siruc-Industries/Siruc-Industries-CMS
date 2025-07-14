@@ -4,9 +4,9 @@ import { defineStore } from 'pinia';
 export const useFormFieldsStore = defineStore('formFields', {
   state: () => ({
     formFields: [
-      { field: 'input', type: null, value: '', placeholder: 'Title (Heading 1)' },
-      { field: 'textarea', type: null, value: '', placeholder: 'Text' },
-      { field: 'input', type: null, value: '', placeholder: 'Author' },
+      { field: 'input', name: 'title', type: null, value: '', placeholder: 'Title (Heading 1)' },
+      { field: 'textarea', name: 'text', type: null, value: '', placeholder: 'Text' },
+      { field: 'input', name: 'author', type: null, value: '', placeholder: 'Author' },
     ],
     availableFields: [
       { field: 'input', type: null, label: 'Title (Heading 1)', placeholder: 'Title (Heading 1)' },
@@ -34,7 +34,7 @@ export const useFormFieldsStore = defineStore('formFields', {
     clearForm() {
       this.formFields = this.formFields.map(field => ({
         ...field,
-        value: field.type === 'file' ? null : '',
+        value: field.type === 'file' ? '' : '',
       }));
     },
   },

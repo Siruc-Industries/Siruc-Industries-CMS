@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>{{ article?.title }}</h1>
-    <p>{{ article?.text }}</p>
+    <div v-html="article?.text" class="article-content"></div>
     <img
       v-if="article?.image"
       :src="`http://localhost:5000${article.image}`"
@@ -121,6 +121,7 @@ onMounted(() => {
   flex-direction: column;
   gap: 8px;
 }
+
 .card-image {
   width: 600px;
   height: 400px;

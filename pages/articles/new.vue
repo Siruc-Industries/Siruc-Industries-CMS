@@ -4,7 +4,7 @@
 
     <div>
       <div class="input-selector">
-        <el-select v-model="selectedField" placeholder="Add Field" value-key="label">
+        <el-select :disabled="true" v-model="selectedField" placeholder="Choose tags for your article" value-key="label">
           <el-option 
             v-for="field in availableFields" 
             :key="field.label" 
@@ -40,11 +40,11 @@
             />
           </template>
           <template v-else-if="field.field === 'textarea'">
-            <textarea
-              v-model="field.value"
-              :placeholder="field.placeholder"
-              class="input"
-            />
+            <ClientOnly>
+              <div class="editor-container">
+                <div :id="`editor-${index}`" :value="field.value"></div>
+              </div>
+            </ClientOnly>
           </template>
           <template v-else>
             <component
@@ -135,19 +135,23 @@
   } 
 }
 
+.editor-container {
+  width: 100%;
+}
+
 .create-button {
   width: 100%;
 }
 </style>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, nextTick, onMounted } from 'vue';
 import { useFormFieldsStore } from '~/stores/articles';
 import { createArticle } from '~/services/api/articles';
 
 const store = useFormFieldsStore();
 
-const { formFields, availableFields } = store; // Expose store properties
+const { formFields, availableFields } = store;
 
 const selectedField = ref<{ label: string; field: string; placeholder: string }>({
   label: '',
@@ -162,10 +166,68 @@ const addField = (field: any) => {
     label: '',
     field: '',
     placeholder: ''
-  }; // Reset selection
+  };
+
+  if (field.field === 'textarea') {
+    initializeQuill(formFields.length - 1);
+  }
 };
 
+const quillInstances = ref<{ [key: number]: any }>({});
+
+const initializeQuill = async (index: number) => {
+  // Only initialize on client side
+  if (!process.client) return;
+
+  // Dynamically import Quill and CSS only on client
+  const { default: Quill } = await import('quill');
+  await import('quill/dist/quill.snow.css');
+  
+  // Wait for next tick to ensure DOM is updated
+  nextTick(() => {
+    const editorElement = document.getElementById(`editor-${index}`);
+    if (editorElement && !quillInstances.value[index]) {
+      quillInstances.value[index] = new Quill(`#editor-${index}`, {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            ['link', 'image'],
+            ['clean']
+          ]
+        }
+      });
+
+      // Set initial content if field has a value
+      if (formFields[index].value) {
+        quillInstances.value[index].root.innerHTML = formFields[index].value;
+      }
+
+      // Listen for content changes and update field.value
+      quillInstances.value[index].on('text-change', () => {
+        const content = quillInstances.value[index].root.innerHTML;
+        formFields[index].value = content;
+      });
+    }
+  });
+};
+
+onMounted(() => {
+  if (process.client) {
+    formFields.forEach((field: any, index: number) => {
+      if (field.field === 'textarea') {
+        initializeQuill(index);
+      }
+    });
+  }
+});
+
 const removeField = (index: any) => {
+  // Clean up Quill instance if it exists
+  if (quillInstances.value[index]) {
+    delete quillInstances.value[index];
+  }
   store.removeField(index);
 };
 
@@ -204,8 +266,12 @@ const confirmCreateArticle = async () => {
       if (field.description) {
         formData.append(`file-description-${index}`, field.description);
       }
+    } else if (field.field === 'textarea' && quillInstances.value[index]) {
+      // Get content directly from Quill instance for textarea fields
+      const content = quillInstances.value[index].root.innerHTML;
+      formData.append(field.name, content);
     } else {
-      formData.append(`field-${index}`, field.value);
+      formData.append(field.name, field.value);
     }
   });
 
