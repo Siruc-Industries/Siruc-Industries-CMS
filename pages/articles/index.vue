@@ -31,9 +31,9 @@
             </div>
           </div>
         </template>
-        <p class="text item">
-          {{ article.text }}
-        </p>
+        <div class="text item">
+          <div v-html="article?.text" class="article-content"></div>
+        </div>
         <template #footer>
           <div class="footer">
             <div class="footer-info">
@@ -154,5 +154,10 @@ onMounted(getArticlesList);
 
 .span {
   margin: 0 6px;
+}
+
+.text.item {
+  height: 1.5rem;
+  overflow: hidden;
 }
 </style>
