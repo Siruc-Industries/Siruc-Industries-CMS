@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h2>New Article</h2>
+    <h2>New Project</h2>
 
     <div>
       <div class="input-selector">
-        <el-select :disabled="false" v-model="selectedField" placeholder="Choose tags for your article" value-key="label">
+        <el-select :disabled="false" v-model="selectedField" placeholder="Choose tags for your project" value-key="label">
           <el-option 
             v-for="field in availableFields" 
             :key="field.label" 
@@ -79,11 +79,11 @@
       width="360px"
       align-center
     >
-      <span>Are you sure you want to create a new article?</span>
+      <span>Are you sure you want to create a new project?</span>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="isDialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="confirmCreateArticle">Confirm</el-button>
+          <el-button type="primary" @click="confirmCreateProject">Confirm</el-button>
         </div>
       </template>
     </el-dialog>
@@ -146,8 +146,8 @@
 
 <script setup lang="ts">
 import { ref, nextTick, onMounted } from 'vue';
-import { useFormFieldsStore } from '~/stores/articles';
-import { createArticle } from '~/services/api/articles';
+import { useFormFieldsStore } from '~/stores/projects';
+import { createProject } from '~/services/api/projects';
 
 const store = useFormFieldsStore();
 
@@ -256,18 +256,17 @@ const showConfirmationDialog = () => {
   isDialogVisible.value = true;
 };
 
-const confirmCreateArticle = async () => {
+const confirmCreateProject = async () => {
   isDialogVisible.value = false;
 
   const formData = new FormData();
   formFields.forEach((field: any, index: any) => {
     if (field.type === 'file' && field.value instanceof File) {
-      // formData.append(`file-${index}`, field.value);
       formData.append(`image`, field.value);
-      // if (field.description) {
-      //   // formData.append(`file-description-${index}`, field.description);
-      //   formData.append(`file-description`, field.description);
-      // }
+      // formData.append(`file-${index}`, field.value);
+      if (field.description) {
+        formData.append(`image-description`, field.description);
+      }
     } else if (field.field === 'textarea' && quillInstances.value[index]) {
       // Get content directly from Quill instance for textarea fields
       const content = quillInstances.value[index].root.innerHTML;
@@ -281,10 +280,10 @@ const confirmCreateArticle = async () => {
   });
 
   try {
-    await createArticle(formData);
+    await createProject(formData);
     store.clearForm();
   } catch (error: any) {
     console.error(error.message);
   }
 };
-</script>
+</script> 

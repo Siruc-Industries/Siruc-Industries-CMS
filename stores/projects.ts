@@ -1,13 +1,13 @@
 // Pinia Store: formFieldsStore.js
 import { defineStore } from 'pinia';
 
-export const useFormFieldsStore = defineStore('formFields', {
+export const useFormFieldsStore = defineStore('projectsFormFields', {
   state: () => ({
     formFields: [
       { field: 'input', name: 'title', type: null, value: '', placeholder: 'Title (Heading 1)', description: '' },
       { field: 'textarea', name: 'text', type: null, value: '', placeholder: 'Text' },
       { field: 'input', name: 'author', type: null, value: '', placeholder: 'Author' },
-      { field: 'input', name: 'tabs', type: null, value: '', label: 'Tabs', placeholder: 'Tab1, Tab2, Tab3, ...' },
+      { field: 'input', type: null, name: 'tabs', value: '', label: 'Tabs', placeholder: 'Tab1, Tab2, Tab3, ...' },
     ],
     availableFields: [
       { field: 'input', type: null, label: 'Title (Heading 1)', placeholder: 'Title (Heading 1)' },
@@ -40,4 +40,4 @@ export const useFormFieldsStore = defineStore('formFields', {
       }));
     },
   },
-});
+}); 

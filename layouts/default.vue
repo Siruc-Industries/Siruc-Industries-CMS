@@ -7,11 +7,17 @@
       <NuxtLink to="/articles">
         <el-button>Articles</el-button>
       </NuxtLink>
+      <NuxtLink to="/projects">
+        <el-button>Projects</el-button>
+      </NuxtLink>
     </aside>
     <main class="main">
       <div class="top">
         <NuxtLink to="/articles/new">
           <el-button>Add article</el-button>
+        </NuxtLink>
+        <NuxtLink to="/projects/new">
+          <el-button>Add project</el-button>
         </NuxtLink>
       </div>
       <section class="section">
@@ -46,8 +52,12 @@ onMounted(() => {
     width: 100%;
 
     .top {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
       height: 80px;
-      padding: 25px 30px;
+      padding: 0 30px;
       border-bottom: 1px solid var(--el-color-border);
     }
 
