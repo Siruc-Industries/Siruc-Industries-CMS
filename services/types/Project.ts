@@ -1,4 +1,4 @@
-export interface Article {
+export interface Project {
   id: number;
   title: string;
   text: string;
@@ -8,11 +8,9 @@ export interface Article {
   tabs?: string[];
 }
 
-export interface CreateArticle {
+export interface CreateProject {
   title: string;
   text: string;
   author: string;
   image?: string; // Optional property, as it may be null
-}
-
-
+} 

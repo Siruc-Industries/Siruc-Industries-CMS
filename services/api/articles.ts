@@ -47,17 +47,31 @@ export const deleteArticle = async (id: number) => {
 // POST new article
 export const createArticle = async (formData: FormData) => {
   try {
+    console.log('Attempting to create article...');
+    console.log('API URL:', `${API_BASE_URL}/articles`);
+    
     const response = await fetch(`${API_BASE_URL}/articles`, {
       method: 'POST',
       body: formData,
     });
 
     if (!response.ok) {
-      throw new Error('Failed to create article');
+      const errorText = await response.text();
+      console.error('Response not OK:', response.status, errorText);
+      throw new Error(`Failed to create article: ${response.status} - ${errorText}`);
     }
+    
+    const result = await response.json();
+    console.log('Article created successfully:', result);
     alert('Article created successfully.');
+    return result;
   } catch (error: any) {
-    alert('Error!');
     console.error('Error creating article:', error);
+    if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
+      alert('Network error: Cannot connect to backend server. Please check if the server is running on port 5000.');
+    } else {
+      alert(`Error creating article: ${error.message}`);
+    }
+    throw error;
   }
 }

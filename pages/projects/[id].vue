@@ -1,23 +1,23 @@
 <template>
   <div class="container">
-    <h1>{{ article?.title }}</h1>
-    <div v-html="article?.text" class="article-content"></div>
+    <h1>{{ project?.title }}</h1>
+    <div v-html="project?.text" class="content"></div>
     <img
-      v-if="article?.image"
-      :src="`http://localhost:5000${article.image}`"
-      alt="Article image"
+      v-if="project?.image"
+      :src="`http://localhost:5000${project.image}`"
+      alt="Project image"
       class="card-image"
     />
-    <div v-if="article?.tabs" class="tabs">
-      <div v-for="tab in article?.tabs" :key="tab" class="tab">
+    <div v-if="project?.tabs" class="tabs">
+      <div v-for="tab in project?.tabs" :key="tab" class="tab">
         {{ tab }}
       </div>
     </div>
-    <p>Written by: {{ article?.author }}</p>
-    <p>Published on: {{ article?.createdAt }}</p>
+    <p>Written by: {{ project?.author }}</p>
+    <p>Published on: {{ project?.createdAt }}</p>
 
     <div>
-      <NuxtLink :to="`/articles/edit/${article?.id}`">
+      <NuxtLink :to="`/projects/edit/${project?.id}`">
         <el-button type="warning">Edit</el-button>
       </NuxtLink>
       <el-button 
@@ -34,7 +34,7 @@
       width="500"
       align-center
     >
-      <span>Are you sure you want to delete this article?</span>
+      <span>Are you sure you want to delete this project?</span>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false">Cancel</el-button>
@@ -50,21 +50,21 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import type { Article } from '~/services/types/Article';
+import type { Project } from '~/services/types/Project';
 
 const route = useRoute();
 const router = useRouter();
-const article = ref<Article | null>(null);
+const project = ref<Project | null>(null);
 const dialogVisible = ref(false);
 
-const loadArticle = async (id: any) => {
+const loadProject = async (id: any) => {
   try {
-    const response = await fetch(`http://localhost:5000/api/articles/${id}`, {
+    const response = await fetch(`http://localhost:5000/api/projects/${id}`, {
       method: 'GET',
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch article: ${response.status}`);
+      throw new Error(`Failed to fetch project: ${response.status}`);
     }
 
     const data = await response.json(); // Parse JSON from the response
@@ -79,11 +79,11 @@ const loadArticle = async (id: any) => {
 
     data.createdAt = formattedDate;
 
-    article.value = data;
+    project.value = data;
   } catch (error: any) {
-    console.error('Fetch articles error:', error.message);
+    console.error('Fetch projects error:', error.message);
     // Allow the frontend to proceed even if the API call fails
-    article.value = null; // Fallback to an empty array
+    project.value = null; // Fallback to an empty array
   }
 };
 
@@ -96,27 +96,27 @@ const confirmDelete = async () => {
   const id = route.params.id;
 
   try {
-    const response = await fetch(`http://localhost:5000/api/articles/${id}`, {
+    const response = await fetch(`http://localhost:5000/api/projects/${id}`, {
       method: 'DELETE',
     });
     
     if (!response.ok) {
-      throw new Error('Failed to delete article');
+      throw new Error('Failed to delete project');
     }
 
-    console.log('Article deleted successfully');
+    console.log('Project deleted successfully');
     
-    // Fetch the updated list of articles
-    router.push('/articles')
+    // Fetch the updated list of projects
+    router.push('/projects')
   } catch (error) {
-    console.error('Error deleting article:', error);
+    console.error('Error deleting project:', error);
   }
 };
 
 
 onMounted(() => {
   const id = route.params.id;
-  loadArticle(id);
+  loadProject(id);
 });
 </script>
 
@@ -149,4 +149,4 @@ onMounted(() => {
     border-radius: 4px;
   }
 }
-</style>
+</style> 
