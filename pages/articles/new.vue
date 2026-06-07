@@ -274,10 +274,11 @@ const confirmCreateArticle = async () => {
     if (field.type === 'file' && field.value instanceof File) {
       // formData.append(`file-${index}`, field.value);
       formData.append(`image`, field.value);
-      // if (field.description) {
-      //   // formData.append(`file-description-${index}`, field.description);
-      //   formData.append(`file-description`, field.description);
-      // }
+      if (field.description) {
+        // formData.append(`file-description-${index}`, field.description);
+        // formData.append(`file-description`, field.description);
+        formData.append('imageDescription', field.description);
+      }
     } else if (field.field === 'textarea' && quillInstances.value[index]) {
       // Get content directly from Quill instance for textarea fields
       const content = quillInstances.value[index].root.innerHTML;

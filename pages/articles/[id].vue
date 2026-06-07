@@ -2,12 +2,14 @@
   <div class="container">
     <h1>{{ article?.title }}</h1>
     <div v-html="article?.text" class="article-content"></div>
-    <img
-      v-if="article?.image"
-      :src="`http://localhost:5000${article.image}`"
-      alt="Article image"
-      class="card-image"
-    />
+    <div v-if="article?.image">
+      <img  
+        :src="article?.image" 
+        :title="article?.imageDescription"
+        class="card-image"
+      />
+      <i class="img-desc">{{ article?.imageDescription }}</i>
+    </div>
     <div v-if="article?.tabs" class="tabs">
       <div v-for="tab in article?.tabs" :key="tab" class="tab">
         {{ tab }}
@@ -148,5 +150,13 @@ onMounted(() => {
     padding: 4px 8px;
     border-radius: 4px;
   }
+}
+
+.img-desc {
+    display: block;
+    line-height: 12px;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #ccc;
 }
 </style>
