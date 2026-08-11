@@ -22,12 +22,16 @@
       </div>
       <section class="section">
         <NuxtPage />
+
+        <Spinner v-if="isLoading" />
       </section>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+const isLoading = useState('isLoading', () => false)
+
 onMounted(() => {
   document.documentElement.classList.add('dark');
 });
@@ -62,7 +66,9 @@ onMounted(() => {
     }
 
     .section {
+      position: relative;
       padding: 25px 30px;
+      min-height: calc(100vh - 80px);
     }
   }
 }

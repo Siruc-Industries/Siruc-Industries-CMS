@@ -57,7 +57,10 @@ const router = useRouter();
 const project = ref<Project | null>(null);
 const dialogVisible = ref(false);
 
+const isLoading = useState('isLoading');
+
 const loadProject = async (id: any) => {
+  isLoading.value = true
   try {
     const response = await fetch(`http://localhost:5000/api/projects/${id}`, {
       method: 'GET',
@@ -84,6 +87,8 @@ const loadProject = async (id: any) => {
     console.error('Fetch projects error:', error.message);
     // Allow the frontend to proceed even if the API call fails
     project.value = null; // Fallback to an empty array
+  } finally {
+    isLoading.value = false
   }
 };
 
