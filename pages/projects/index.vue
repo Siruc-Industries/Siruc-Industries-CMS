@@ -73,6 +73,8 @@ import { ref, onMounted } from 'vue';
 import { fetchProjects } from '~/services/api/projects'
 import type { Project } from '~/services/types/Project';
 
+const isLoading = useState('isLoading');
+
 const projects = ref<Project[]>([]);
 const dialogVisible = ref(false);
 const chosenProjectId = ref();
@@ -85,7 +87,7 @@ const openDialog = (id: number) => {
 const confirmDelete = async () => {
   dialogVisible.value = false;
   console.log(`>>> ID: ${chosenProjectId.value}`);
-  
+  isLoading.value = true;
   try {
     const response = await fetch(`http://localhost:5000/api/projects/${chosenProjectId.value}`, {
       method: 'DELETE',
@@ -101,16 +103,21 @@ const confirmDelete = async () => {
     await getProjectsList();
   } catch (error) {
     console.error('Error deleting project:', error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
 const getProjectsList = async () => {
+  isLoading.value = true;
   try {
     const fetchedProjects = await fetchProjects();
     projects.value = fetchedProjects;
   } catch (error) {
     console.error('Error fetching projects:', error);
     projects.value = [];
+  } finally {
+    isLoading.value = false;
   }
 }
 

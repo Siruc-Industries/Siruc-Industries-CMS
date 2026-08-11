@@ -47,6 +47,8 @@
       </template>
     </el-dialog>
   </div>
+
+ <Spinner v-if="isLoading" />
 </template>
 
 <script setup lang="ts">
@@ -59,7 +61,10 @@ const router = useRouter();
 const article = ref<Article | null>(null);
 const dialogVisible = ref(false);
 
+const isLoading = useState('isLoading');
+
 const loadArticle = async (id: any) => {
+  isLoading.value = true;
   try {
     const response = await fetch(`http://localhost:5000/api/articles/${id}`, {
       method: 'GET',
@@ -86,6 +91,8 @@ const loadArticle = async (id: any) => {
     console.error('Fetch articles error:', error.message);
     // Allow the frontend to proceed even if the API call fails
     article.value = null; // Fallback to an empty array
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -95,6 +102,7 @@ const openDialog = () => {
 
 const confirmDelete = async () => {
   dialogVisible.value = false;
+  isLoading.value = true;
   const id = route.params.id;
 
   try {
@@ -112,6 +120,8 @@ const confirmDelete = async () => {
     router.push('/articles')
   } catch (error) {
     console.error('Error deleting article:', error);
+  } finally {
+    isLoading.value = false;
   }
 };
 

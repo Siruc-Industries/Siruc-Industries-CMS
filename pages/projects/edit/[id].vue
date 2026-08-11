@@ -44,90 +44,100 @@
 </style>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+  import { ref, onMounted } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
 
-const route = useRoute();
-const router = useRouter();
-const project = ref<any>(null);
+  const route = useRoute();
+  const router = useRouter();
+  const project = ref<any>(null);
 
-const formData = ref({
-  title: '',
-  text: '',
-  author: '',
-});
-const selectedImage = ref<File | null>(null);
 
-// Fetch project details to populate the form
-const fetchProject = async (id: any) => {
-  try {
-    const response = await fetch(`http://localhost:5000/api/projects/${id}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch project: ${response.status}`);
+  const isLoading = useState('isLoading');
+
+  const formData = ref({
+    title: '',
+    text: '',
+    author: '',
+  });
+  const selectedImage = ref<File | null>(null);
+
+  // Fetch project details to populate the form
+  const fetchProject = async (id: any) => {
+    isLoading.value = true;
+    try {
+      const response = await fetch(`http://localhost:5000/api/projects/${id}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch project: ${response.status}`);
+      }
+      const data = await response.json();
+
+      // Populate form data
+      formData.value = {
+        title: data.title,
+        text: data.text,
+        author: data.author,
+      };
+      project.value = data;
+    } catch (error: any) {
+      console.error('Fetch project error:', error.message);
+      alert('Failed to load project data');
+    } finally {
+      isLoading.value = false;
     }
-    const data = await response.json();
+  };
 
-    // Populate form data
-    formData.value = {
-      title: data.title,
-      text: data.text,
-      author: data.author,
-    };
-    project.value = data;
-  } catch (error: any) {
-    console.error('Fetch project error:', error.message);
-    alert('Failed to load project data');
-  }
-};
+  // Handle file upload
+  const handleFileUpload = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files[0]) {
+      selectedImage.value = target.files[0];
+    }
+  };
 
-// Handle file upload
-const handleFileUpload = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files[0]) {
-    selectedImage.value = target.files[0];
-  }
-};
+  // Update project
+  const updateProject = async () => {    
+    isLoading.value = true;
 
-// Update project
-const updateProject = async () => {
-  if (!formData.value.title || !formData.value.text || !formData.value.author) {
-    alert('Please fill in all fields');
-    return;
-  }
-
-  const id = route.params.id;
-  const apiUrl = process.env.API_BASE_URL || 'http://localhost:5000';
-
-  // Prepare FormData object
-  const updatedFormData = new FormData();
-  updatedFormData.append('title', formData.value.title);
-  updatedFormData.append('text', formData.value.text);
-  updatedFormData.append('author', formData.value.author);
-
-  if (selectedImage.value) {
-    updatedFormData.append('image', selectedImage.value);
-  }
-
-  try {
-    const response = await fetch(`${apiUrl}/api/projects/${id}`, {
-      method: 'PUT',
-      body: updatedFormData,
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update project');
+    if (!formData.value.title || !formData.value.text || !formData.value.author) {
+      alert('Please fill in all fields');
+      return;
     }
 
-    alert('Project updated successfully!');
-    router.push(`/projects/${route.params.id}`);
-  } catch (error: any) {
-    console.error(error.message);
-    alert('Failed to update the project');
-  }
-};
+    const id = route.params.id;
+    const apiUrl = process.env.API_BASE_URL || 'http://localhost:5000';
 
-onMounted(() => {
-  const id = route.params.id;
-  fetchProject(id);
-});
+    // Prepare FormData object
+    const updatedFormData = new FormData();
+    updatedFormData.append('title', formData.value.title);
+    updatedFormData.append('text', formData.value.text);
+    updatedFormData.append('author', formData.value.author);
+
+    if (selectedImage.value) {
+      updatedFormData.append('image', selectedImage.value);
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}/api/projects/${id}`, {
+        method: 'PUT',
+        body: updatedFormData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update project');
+      }
+
+      alert('Project updated successfully!');
+      router.push(`/projects/${route.params.id}`);
+    } catch (error: any) {
+      console.error(error.message);
+      alert('Failed to update the project');
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
+  onMounted(() => {
+    const id = route.params.id;
+    fetchProject(id);
+  });
 </script> 

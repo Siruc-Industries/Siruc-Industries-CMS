@@ -77,12 +77,15 @@ const articles = ref<Article[]>([]);
 const dialogVisible = ref(false);
 const chosenArticleId = ref();
 
+const isLoading = useState('isLoading');
+
 const openDialog = (id: number) => {
   chosenArticleId.value = id;
   dialogVisible.value = true;
 };
 
 const confirmDelete = async () => {
+  isLoading.value = true;
   dialogVisible.value = false;
   console.log(`>>> ID: ${chosenArticleId.value}`);
   
@@ -101,16 +104,21 @@ const confirmDelete = async () => {
     await getArticlesList();
   } catch (error) {
     console.error('Error deleting article:', error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
 const getArticlesList = async () => {
+  isLoading.value = true;
   try {
     const fetchedArticles = await fetchArticles();
     articles.value = fetchedArticles;
   } catch (error) {
     console.error('Error fetching articles:', error);
     articles.value = [];
+  } finally {
+    isLoading.value = false;
   }
 }
 
