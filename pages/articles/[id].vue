@@ -61,7 +61,7 @@ const router = useRouter();
 const article = ref<Article | null>(null);
 const dialogVisible = ref(false);
 
-const isLoading = ref(false);
+const isLoading = useState('isLoading');
 
 const loadArticle = async (id: any) => {
   isLoading.value = true;
