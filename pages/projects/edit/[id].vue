@@ -100,6 +100,7 @@
 
     if (!formData.value.title || !formData.value.text || !formData.value.author) {
       alert('Please fill in all fields');
+      isLoading.value = false;
       return;
     }
 

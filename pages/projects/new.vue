@@ -150,6 +150,7 @@ import { useFormFieldsStore } from '~/stores/projects';
 import { createProject } from '~/services/api/projects';
 
 const store = useFormFieldsStore();
+const router = useRouter();
 
 const { formFields, availableFields } = store;
 
@@ -280,8 +281,10 @@ const confirmCreateProject = async () => {
   });
 
   try {
-    await createProject(formData);
+    const newProjectResponse = await createProject(formData);
     store.clearForm();
+
+    await router.push(`/projects/${newProjectResponse.id}`);
   } catch (error: any) {
     console.error(error.message);
   }
