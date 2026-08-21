@@ -40,7 +40,10 @@ export const createProject = async (formData: FormData) => {
     if (!response.ok) {
       throw new Error('Failed to create project');
     }
+
+    const result = await response.json();
     alert('Project created successfully.');
+    return result;
   } catch (error: any) {
     alert('Error!');
     console.error('Error creating project:', error);

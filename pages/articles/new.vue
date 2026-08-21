@@ -150,6 +150,7 @@ import { useFormFieldsStore } from '~/stores/articles';
 import { createArticle } from '~/services/api/articles';
 
 const store = useFormFieldsStore();
+const router = useRouter();
 
 const { formFields, availableFields } = store;
 
@@ -292,8 +293,10 @@ const confirmCreateArticle = async () => {
   });
 
   try {
-    await createArticle(formData);
+    const newArtResponse = await createArticle(formData);
     store.clearForm();
+
+    await router.push(`/articles/${newArtResponse.id}`);
   } catch (error: any) {
     console.error(error.message);
   }
